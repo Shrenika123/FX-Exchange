@@ -1,4 +1,4 @@
-import { Col, FloatButton, Row } from 'antd';
+import { Button, Col, FloatButton, Row } from 'antd';
 import React, { useState } from 'react';
 import { PlusOutlined } from '@ant-design/icons';
 import utils from '../../API/utils';
@@ -9,6 +9,7 @@ import Card from '../../organisms/Card';
 import Styles from './dashboard.module.scss';
 import { formatDate } from '../../common/utils';
 import { useAppContext } from '../../store';
+import { LeftOutlined, RightOutlined } from '@ant-design/icons';
 
 const Dashboard: React.FC = () => {
   const { setDashBoardData, currencyConvertorCards, setLoading } =
@@ -43,6 +44,25 @@ const Dashboard: React.FC = () => {
   };
   return (
     <>
+      <div>
+        <Button
+          icon={
+            <div style={{ display: 'flex', flexDirection: 'row' }}>
+              <p>hi</p>
+              <span style={{ display: 'flex', flexDirection: 'column' }}>
+                <RightOutlined />
+                <RightOutlined />
+              </span>
+            </div>
+          }
+          size={'large'}
+          type='primary'
+        >
+          vhhhhgvvhhhh
+        </Button>
+        <Button>jj</Button>
+        <Button></Button>
+      </div>
       <FloatButton
         icon={<PlusOutlined height={'3rem'} />}
         type='primary'

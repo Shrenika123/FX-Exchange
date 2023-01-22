@@ -4,6 +4,7 @@ import {
   useMemo,
   useContext,
   useReducer,
+  useEffect,
 } from 'react';
 import { ActionType, IDataForModal } from '../interface';
 import { counterReducer } from './reducer';
@@ -29,6 +30,25 @@ export const WithAppContext = ({
     []
   );
 
+  useEffect(() => {
+    if (currencyConvertorCards.length > 0)
+      localStorage.setItem(
+        'DASHBOARD_STATE',
+        JSON.stringify(currencyConvertorCards)
+      );
+  }, [currencyConvertorCards]);
+
+  useEffect(() => {
+    const items = JSON.parse(localStorage.getItem('DASHBOARD_STATE')!);
+    if (items) {
+      setCurrencyConvertorCards({
+        type: 'SET_COMPLETE_DATA',
+        payload: {} as IDataForModal,
+        completeState: items,
+      });
+    }
+  }, []);
+
   const setDashBoardData = (type: ActionType, payload: IDataForModal) => {
     setCurrencyConvertorCards({ type: type, payload: payload });
   };
@@ -44,7 +64,7 @@ export const WithAppContext = ({
           currencyConvertorCards,
           setDashBoardData,
         }),
-        [error, loading, currencyConvertorCards, currencyConvertorCards]
+        [error, loading, currencyConvertorCards]
       )}
     >
       {children}

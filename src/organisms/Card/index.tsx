@@ -6,6 +6,7 @@ import Styles from './card.module.scss';
 import { formatDate, isNum } from '../../common/utils';
 import { useAppContext } from '../../store';
 import utils from '../../API/utils';
+import Loader from '../../atoms/Loader';
 interface CardProps {
   data: IDataForModal;
 }
@@ -29,7 +30,8 @@ const CustomCard: React.FC<CardProps> = ({ data }) => {
   const [lastChanged, setLastChanged] = useState<CURRENCY>(
     CURRENCY.FROM_CURRENCY
   );
-  const { setDashBoardData, setLoading } = useAppContext();
+  const { setDashBoardData } = useAppContext();
+  const [loadingCard, setLoadingCard] = useState(false);
 
   useEffect(() => {
     if (status === STATUS.UPDATE) setDashBoardData('UPDATE', currencyCardData);
@@ -102,7 +104,7 @@ const CustomCard: React.FC<CardProps> = ({ data }) => {
 
   const changeFromAndToCurrency = () => {
     const { toCurrencyValue, fromCurrencyValue } = currencyCardData;
-    setLoading(true);
+    setLoadingCard(true);
     utils
       .fetch(
         `https://api.exchangerate.host/convert?from=${currencyCardData.toCurrency}&to=${currencyCardData.fromCurrency}`,
@@ -111,7 +113,6 @@ const CustomCard: React.FC<CardProps> = ({ data }) => {
         }
       )
       .then((res) => {
-        setLoading(false);
         setStatus(STATUS.UPDATE);
         setCurrencyCardData({
           ...currencyCardData,
@@ -136,13 +137,15 @@ const CustomCard: React.FC<CardProps> = ({ data }) => {
                 ),
         });
       })
-      .catch((e) => {
-        setLoading(false);
+      .catch((e) => {})
+      .finally(() => {
+        setLoadingCard(false);
       });
   };
 
   return (
     <div className={Styles.cardContainer}>
+      {loadingCard && <Loader />}
       <Card>
         <Row>
           <Col span={4}>
