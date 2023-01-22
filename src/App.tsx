@@ -1,24 +1,18 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import logo from './logo.svg';
-import './App.css';
+import './App.scss';
+import Dashboard from './pages/Dashboard';
+import { useAppContext } from './store';
+import axios from 'axios';
+import { useAxiosLoader } from './customHooks/useAxiosLoader';
 
 function App() {
+  const [counter, setCounter] = useState(0);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className='App'>
+      {counter > 0 && <p style={{ textAlign: 'center' }}>loading..</p>}
+      <Dashboard />
     </div>
   );
 }
