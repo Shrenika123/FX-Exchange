@@ -1,44 +1,22 @@
 import { Col, FloatButton, Row } from 'antd';
-import React, { useCallback, useEffect, useReducer, useState } from 'react';
+import React, { useState } from 'react';
 import { PlusOutlined } from '@ant-design/icons';
 import utils from '../../API/utils';
-import { API_METHODS, IDataForModal } from '../../interface';
+import { API_METHODS } from '../../interface';
 import ModalForm, { IFormValue } from '../../organisms/modalForm';
 import { nanoid } from 'nanoid';
 import Card from '../../organisms/Card';
 import Styles from './dashboard.module.scss';
+import { formatDate } from '../../common/utils';
+import { useAppContext } from '../../store';
 
-type ActionType = 'ADD' | 'DELETE' | 'UPDATE' | 'DELETE_ALL';
-type Action = { type: ActionType; payload: IDataForModal };
 const Dashboard: React.FC = () => {
-  const [createdCardCurrencyRate, setCreatedCardCurrencyRate] =
-    useState<number>();
-
-  function counterReducer(state: IDataForModal[], action: Action) {
-    const { type, payload } = action;
-    switch (type) {
-      case 'ADD': {
-        return [...state, payload];
-      }
-      case 'DELETE': {
-        return [...state.filter((item) => item.id !== payload.id)];
-      }
-      case 'DELETE_ALL': {
-        return [];
-      }
-      default:
-        return state;
-    }
-  }
-
-  const [currencyConvertorCards, setCurrencyConvertorCards] = useReducer(
-    counterReducer,
-    []
-  );
-
+  const { setDashBoardData, currencyConvertorCards, setLoading } =
+    useAppContext();
   const [visible, setVisible] = useState(false);
 
   const getCurrencyRate = async (currencies: IFormValue) => {
+    setLoading(true);
     await utils
       .fetch(
         `https://api.exchangerate.host/convert?from=${currencies.fromCurrency}&to=${currencies.toCurrency}`,
@@ -47,20 +25,22 @@ const Dashboard: React.FC = () => {
         }
       )
       .then((res) => {
-        setCurrencyConvertorCards({
-          type: 'ADD',
-          payload: {
-            ...currencies,
-            id: nanoid(),
-            updatedAt: new Date(),
-            convertedRate: res.data.result,
-          },
+        setLoading(false);
+        setDashBoardData('ADD', {
+          ...currencies,
+          id: nanoid(),
+          updatedAt: formatDate(new Date()),
+          createdAt: formatDate(new Date()),
+          convertedRate: res.data.result,
+          fromCurrencyValue: '',
+          toCurrencyValue: '',
         });
-        setCreatedCardCurrencyRate(res.data.result);
+      })
+      .catch((e) => {
+        setLoading(false);
       });
-    setVisible(false);
+    await setVisible(false);
   };
-
   return (
     <>
       <FloatButton
@@ -76,9 +56,9 @@ const Dashboard: React.FC = () => {
         onCancel={() => setVisible(false)}
       />
       {currencyConvertorCards.length > 0 && (
-        <Row>
+        <Row className={Styles.rowContainer} gutter={16}>
           {currencyConvertorCards.map((item) => (
-            <Col key={item.id} span={6} className={Styles.CardContainer}>
+            <Col key={item.id} span={8} className={Styles.CardContainer}>
               <Card data={item} />
             </Col>
           ))}

@@ -1,0 +1,50 @@
+
+.cardContainer  :nth-child(1) input {
+    margin-top: 0.6rem;
+}
+
+.iconContainer{
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+   }
+
+ .inputWrapper{
+    margin: 0.5rem 0 0.5rem 0.5rem;
+}
+ 
+
+.arrowRateWrapper{
+    display:flex;
+    flex-direction: row;
+}
+
+.currencyRate{
+    display: flex;
+    align-items: center;
+}
+
+.currencyRate p{
+    margin-left: -0.5rem;
+}
+
+.cardContainer{
+    :global(.ant-card-body){
+        border: solid 0.5px gray;
+    }
+
+    :global(.anticon){
+        padding: 1rem 0 1rem 1rem;
+    }
+}
+
+.updatedAtText{
+    text-align: right;
+    margin: 0;
+}
+
+.spanUpdated{
+    color: #3F96FE;
+    text-align: right;
+    margin: 0;
+}

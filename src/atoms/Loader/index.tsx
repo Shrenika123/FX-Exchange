@@ -1,4 +1,5 @@
 import React from 'react';
+import { useAppContext } from '../../store';
 import Styes from './loader.module.scss';
 
 const Loader: React.FC = () => {

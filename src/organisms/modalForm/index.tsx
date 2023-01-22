@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Modal, Form, Input } from 'antd';
 import { currencyTypes } from '../../common/constant';
+import { useAppContext } from '../../store';
 interface IProps {
   visible: boolean;
   onSubmit: (data: any) => void;
@@ -16,7 +17,7 @@ const ModalForm: React.FC<IProps> = ({ visible, onSubmit, onCancel }) => {
   const [fromCurrency, setFromCurrency] = useState<string>('');
   const [toCurrency, setToCurrency] = useState<string>('');
   const [form] = Form.useForm();
-
+  const { loading } = useAppContext();
   const resetForm = () => {
     form.resetFields();
     setFromCurrency('');
@@ -53,6 +54,7 @@ const ModalForm: React.FC<IProps> = ({ visible, onSubmit, onCancel }) => {
       onOk={form.submit}
       onCancel={onCancelModal}
       maskClosable={false}
+      confirmLoading={loading}
     >
       <Form form={form} layout='vertical' onFinish={handleSubmit}>
         <Form.Item
