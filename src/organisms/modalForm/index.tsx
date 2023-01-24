@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Modal, Form, Input } from 'antd';
-import { currencyTypes } from '../../common/constant';
+import { currencyTypes, labels } from '../../common/constant';
 import { useAppContext } from '../../store';
 interface IProps {
   visible: boolean;
@@ -34,10 +34,10 @@ const ModalForm: React.FC<IProps> = ({ visible, onSubmit, onCancel }) => {
       if (fromCurrency !== toCurrency) {
         return Promise.resolve();
       } else {
-        return Promise.reject('Cannot have same currency');
+        return Promise.reject(labels.SameCurrencyError);
       }
     } else {
-      return Promise.reject('Please enter correct currency Format');
+      return Promise.reject(labels.CurrencyError);
     }
   };
 
@@ -50,15 +50,16 @@ const ModalForm: React.FC<IProps> = ({ visible, onSubmit, onCancel }) => {
   return (
     <Modal
       open={visible}
-      title='Please Enter the Currencies'
+      title={labels.EnterCurrency}
       onOk={form.submit}
       onCancel={onCancelModal}
       maskClosable={false}
       confirmLoading={loading}
+      closable={false}
     >
       <Form form={form} layout='vertical' onFinish={handleSubmit}>
         <Form.Item
-          label='From Currency'
+          label={labels.FromCurrency}
           name='fromCurrency'
           rules={[
             {
@@ -78,7 +79,7 @@ const ModalForm: React.FC<IProps> = ({ visible, onSubmit, onCancel }) => {
           />
         </Form.Item>
         <Form.Item
-          label='To Currency'
+          label={labels.ToCurrency}
           name='toCurrency'
           rules={[
             {

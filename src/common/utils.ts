@@ -7,3 +7,8 @@ export const formatDate = (date: Date) => {
 export const isNum = (value: string) => {
   return /\d/.test(value);
 };
+
+
+export const sortDate = (time1: string, time2: string) => {
+  return new Date(time1).getTime() - new Date(time2).getTime();
+};

@@ -1,16 +1,5 @@
-import { IDataForModal } from '../interface';
-
-type ActionType =
-  | 'ADD'
-  | 'DELETE'
-  | 'UPDATE'
-  | 'DELETE_ALL'
-  | 'SET_COMPLETE_DATA';
-type Action = {
-  type: ActionType;
-  payload: IDataForModal;
-  completeState?: IDataForModal[];
-};
+import { sortDate } from '../common/utils';
+import { Action, IDataForModal } from '../interface';
 
 const updateTheArray = (data: IDataForModal[], state: IDataForModal) => {
   const index = data.findIndex((item) => item.id === state.id);
@@ -21,7 +10,11 @@ export function counterReducer(state: IDataForModal[], action: Action) {
   const { type, payload, completeState } = action;
   switch (type) {
     case 'ADD': {
-      return [...state, payload];
+      return [
+        ...[...state, payload].sort((item1, item2) =>
+          sortDate(item2.createdAt, item1.createdAt)
+        ),
+      ];
     }
     case 'DELETE': {
       return [...state.filter((item) => item.id !== payload.id)];

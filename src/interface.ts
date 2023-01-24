@@ -16,5 +16,24 @@ export enum API_METHODS {
   DELETE = 'DELETE',
 }
 
-export type ActionType = 'ADD' | 'DELETE' | 'UPDATE' | 'DELETE_ALL';
-export type Action = { type: ActionType; payload: IDataForModal };
+export type ActionType =
+  | 'ADD'
+  | 'DELETE'
+  | 'UPDATE'
+  | 'DELETE_ALL'
+  | 'SET_COMPLETE_DATA';
+export type Action = {
+  type: ActionType;
+  payload: IDataForModal;
+  completeState?: IDataForModal[];
+};
+
+export enum SORT_TYPES {
+  ASC = 'ASC',
+  DSC = 'DSC',
+}
+
+export interface IAlert {
+  type: 'success' | 'info' | 'warning' | 'error' | 'none';
+  message: string;
+}

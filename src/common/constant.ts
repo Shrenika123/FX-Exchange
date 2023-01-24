@@ -159,3 +159,19 @@ export const currencyTypes = [
   'ZMW',
   'ZWL',
 ];
+
+export const labels = {
+  SortByUpdated: 'SORT BY UPDATED',
+  SortByCreated: 'SORT BY CREATED',
+  SortByRate: 'SORT BY RATE',
+  ClearAll: 'CLEAR ALL',
+  EnterCurrency: 'Please Enter the Currencies',
+  FromCurrency: 'From Currency',
+  ToCurrency: 'To Currency',
+  SameCurrencyError: 'Cannot have same currency',
+  CurrencyError: 'Please enter correct currency Format',
+  somethingWentWrong: 'Something went wrong!!',
+  cardAddedSuccessfully: 'Card Added Successfully!!',
+  cardDeletedSuccessfully: 'Card Deleted SuccessFully',
+  allCardsDeletedSuccessfully: 'All card deleted successfully!!',
+};

@@ -6,16 +6,24 @@ import {
   useReducer,
   useEffect,
 } from 'react';
-import { ActionType, IDataForModal } from '../interface';
+import { ActionType, IAlert, IDataForModal } from '../interface';
 import { counterReducer } from './reducer';
 
 const AppContext = createContext({
   loading: false,
   error: false,
+  deleteAll: false,
   currencyConvertorCards: [] as IDataForModal[],
   setLoading: (_loading: boolean) => {},
   setError: (_error: boolean) => {},
-  setDashBoardData: (_type: ActionType, _payload: IDataForModal) => {},
+  setDashBoardData: (
+    _type: ActionType,
+    _payload: IDataForModal,
+    _completeState?: IDataForModal[]
+  ) => {},
+  setDeleteAll: (_deleteAll: boolean) => {},
+  setAlertMessage: (_alertMessage: IAlert) => {},
+  alertMessage: { type: '', message: '' },
 });
 
 export const WithAppContext = ({
@@ -29,17 +37,25 @@ export const WithAppContext = ({
     counterReducer,
     []
   );
+  const [deleteAll, setDeleteAll] = useState<boolean>(false);
+  const [alertMessage, setAlertMessage] = useState<IAlert>({
+    type: 'success',
+    message: '',
+  });
+  useEffect(() => {
+    localStorage.setItem('DELETE_ALL', JSON.stringify(deleteAll));
+  }, [deleteAll]);
 
   useEffect(() => {
-    if (currencyConvertorCards.length > 0)
+    if (currencyConvertorCards.length > 0 || deleteAll)
       localStorage.setItem(
         'DASHBOARD_STATE',
         JSON.stringify(currencyConvertorCards)
       );
-  }, [currencyConvertorCards]);
+  }, [currencyConvertorCards, deleteAll]);
 
   useEffect(() => {
-    const items = JSON.parse(localStorage.getItem('DASHBOARD_STATE')!);
+    const items = JSON.parse(localStorage.getItem('DASHBOARD_STATE') || '[]');
     if (items) {
       setCurrencyConvertorCards({
         type: 'SET_COMPLETE_DATA',
@@ -49,8 +65,16 @@ export const WithAppContext = ({
     }
   }, []);
 
-  const setDashBoardData = (type: ActionType, payload: IDataForModal) => {
-    setCurrencyConvertorCards({ type: type, payload: payload });
+  const setDashBoardData = (
+    type: ActionType,
+    payload: IDataForModal,
+    completeData?: IDataForModal[]
+  ) => {
+    setCurrencyConvertorCards({
+      type: type,
+      payload: payload,
+      completeState: completeData,
+    });
   };
 
   return (
@@ -63,8 +87,12 @@ export const WithAppContext = ({
           loading,
           currencyConvertorCards,
           setDashBoardData,
+          setDeleteAll,
+          deleteAll,
+          setAlertMessage,
+          alertMessage,
         }),
-        [error, loading, currencyConvertorCards]
+        [error, loading, currencyConvertorCards, deleteAll, alertMessage]
       )}
     >
       {children}

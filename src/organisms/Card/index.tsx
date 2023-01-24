@@ -6,7 +6,8 @@ import Styles from './card.module.scss';
 import { formatDate, isNum } from '../../common/utils';
 import { useAppContext } from '../../store';
 import utils from '../../API/utils';
-import Loader from '../../atoms/Loader';
+import Loader from '../../common/atoms/Loader';
+import { labels } from '../../common/constant';
 interface CardProps {
   data: IDataForModal;
 }
@@ -30,13 +31,17 @@ const CustomCard: React.FC<CardProps> = ({ data }) => {
   const [lastChanged, setLastChanged] = useState<CURRENCY>(
     CURRENCY.FROM_CURRENCY
   );
-  const { setDashBoardData } = useAppContext();
+  const { setDashBoardData, setAlertMessage } = useAppContext();
   const [loadingCard, setLoadingCard] = useState(false);
 
   useEffect(() => {
     if (status === STATUS.UPDATE) setDashBoardData('UPDATE', currencyCardData);
     else if (status === STATUS.DELETE) {
       setDashBoardData('DELETE', currencyCardData);
+      setAlertMessage({
+        type: 'success',
+        message: 'card deleted Successfully!!',
+      });
     }
   }, [currencyCardData, status]);
 
@@ -45,10 +50,14 @@ const CustomCard: React.FC<CardProps> = ({ data }) => {
     currencyValue: string,
     rate: string
   ) => {
-    if (currencyType === CURRENCY.TO_CURRENCY) {
-      return (Number(currencyValue) * Number(rate)).toFixed(2);
+    if (currencyValue.length === 0) {
+      return currencyValue;
     } else {
-      return (Number(currencyValue) / Number(rate)).toFixed(2);
+      if (currencyType === CURRENCY.TO_CURRENCY) {
+        return (Number(currencyValue) * Number(rate)).toFixed(2);
+      } else {
+        return (Number(currencyValue) / Number(rate)).toFixed(2);
+      }
     }
   };
 
@@ -102,42 +111,62 @@ const CustomCard: React.FC<CardProps> = ({ data }) => {
     }
   };
 
-  const changeFromAndToCurrency = () => {
+  const changeFromAndToCurrency = (
+    fromCurrency: string,
+    toCurrency: string,
+    reload = false
+  ) => {
     const { toCurrencyValue, fromCurrencyValue } = currencyCardData;
     setLoadingCard(true);
     utils
       .fetch(
-        `https://api.exchangerate.host/convert?from=${currencyCardData.toCurrency}&to=${currencyCardData.fromCurrency}`,
+        `https://api.exchangerate.host/convert?from=${fromCurrency}&to=${toCurrency}`,
         {
           method: API_METHODS.GET,
         }
       )
       .then((res) => {
         setStatus(STATUS.UPDATE);
-        setCurrencyCardData({
-          ...currencyCardData,
-          convertedRate: res.data.result,
-          fromCurrency: currencyCardData.toCurrency,
-          toCurrency: currencyCardData.fromCurrency,
-          fromCurrencyValue:
-            lastChanged === CURRENCY.FROM_CURRENCY
-              ? currencyCardData.fromCurrencyValue
-              : calculateCurrency(
-                  CURRENCY.FROM_CURRENCY,
-                  toCurrencyValue,
-                  res.data.result
-                ),
-          toCurrencyValue:
-            lastChanged === CURRENCY.TO_CURRENCY
-              ? currencyCardData.toCurrencyValue
-              : calculateCurrency(
-                  CURRENCY.TO_CURRENCY,
-                  fromCurrencyValue,
-                  res.data.result
-                ),
+        if (!reload) {
+          setCurrencyCardData({
+            ...currencyCardData,
+            convertedRate: res.data.result,
+            fromCurrency: currencyCardData.toCurrency,
+            toCurrency: currencyCardData.fromCurrency,
+            fromCurrencyValue:
+              lastChanged === CURRENCY.FROM_CURRENCY
+                ? currencyCardData.fromCurrencyValue
+                : calculateCurrency(
+                    CURRENCY.FROM_CURRENCY,
+                    toCurrencyValue,
+                    res.data.result
+                  ),
+            toCurrencyValue:
+              lastChanged === CURRENCY.TO_CURRENCY
+                ? currencyCardData.toCurrencyValue
+                : calculateCurrency(
+                    CURRENCY.TO_CURRENCY,
+                    fromCurrencyValue,
+                    res.data.result
+                  ),
+            updatedAt: formatDate(new Date()),
+          });
+        } else {
+          setCurrencyCardData({
+            ...currencyCardData,
+            convertedRate: res.data.result,
+            fromCurrencyValue: '',
+            toCurrencyValue: '',
+            updatedAt: formatDate(new Date()),
+          });
+        }
+      })
+      .catch(() => {
+        setAlertMessage({
+          type: 'error',
+          message: `${labels.somethingWentWrong}`,
         });
       })
-      .catch((e) => {})
       .finally(() => {
         setLoadingCard(false);
       });
@@ -145,8 +174,8 @@ const CustomCard: React.FC<CardProps> = ({ data }) => {
 
   return (
     <div className={Styles.cardContainer}>
-      {loadingCard && <Loader />}
       <Card>
+        {loadingCard && <Loader className={Styles.cardLoader} />}
         <Row>
           <Col span={4}>
             <p>{fromCurrency}</p>
@@ -155,7 +184,13 @@ const CustomCard: React.FC<CardProps> = ({ data }) => {
               height={'120px'}
               width={'60px'}
               alt='bidirectionalArrow'
-              onClick={changeFromAndToCurrency}
+              onClick={() =>
+                changeFromAndToCurrency(
+                  currencyCardData.toCurrency,
+                  currencyCardData.fromCurrency
+                )
+              }
+              className={Styles.arrowStyle}
             />
             <Col>{toCurrency}</Col>
           </Col>
@@ -164,7 +199,15 @@ const CustomCard: React.FC<CardProps> = ({ data }) => {
           </Col>
           <Col span={16}>
             <div className={Styles.iconContainer}>
-              <ReloadOutlined onClick={resetCurrencies} />
+              <ReloadOutlined
+                onClick={() =>
+                  changeFromAndToCurrency(
+                    currencyCardData.fromCurrency,
+                    currencyCardData.toCurrency,
+                    true
+                  )
+                }
+              />
               <CloseOutlined onClick={() => setStatus(STATUS.DELETE)} />
             </div>
             <Input
