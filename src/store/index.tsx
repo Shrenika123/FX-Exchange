@@ -9,7 +9,7 @@ import {
 import { ActionType, IAlert, IDataForModal } from '../interface';
 import { counterReducer } from './reducer';
 
-const AppContext = createContext({
+export const AppContext = createContext({
   loading: false,
   error: false,
   deleteAll: false,

@@ -23,6 +23,7 @@ const SortButton: React.FC<ButtonProps> = ({
         className ? className : ''
       )}
       disabled={true}
+      data-testid='sortButton'
     >
       <div className={Styles.sortButtonContentContainer}>
         <p>{title} </p>

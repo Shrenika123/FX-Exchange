@@ -37,3 +37,21 @@ export interface IAlert {
   type: 'success' | 'info' | 'warning' | 'error' | 'none';
   message: string;
 }
+
+
+export interface IAppContext {
+  loading: boolean;
+  error: boolean;
+  deleteAll: false;
+  alertMessage: IAlert;
+  currencyConvertorCards: IDataForModal[];
+  setLoading: (_loading: boolean) => void;
+  setError: (_error: boolean) => void;
+  setDashBoardData: (
+    _type: ActionType,
+    _payload: IDataForModal,
+    _completeState?: IDataForModal[]
+  ) => void;
+  setDeleteAll: (_deleteAll: boolean) => void;
+  setAlertMessage: (_alertMessage: IAlert) => void;
+}

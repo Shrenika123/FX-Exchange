@@ -118,10 +118,11 @@ const Dashboard: React.FC = () => {
       });
     await setVisible(false);
   };
+  console.log(currencyConvertorCards);
   return (
     <>
       {currencyConvertorCards.length > 0 && (
-        <div className={Styles.buttonContainer}>
+        <div className={Styles.buttonContainer} data-testid='buttonContainer'>
           <div className={Styles.buttonLeftContainer}>
             <SortButton
               className={Styles.sortButton}
@@ -164,6 +165,7 @@ const Dashboard: React.FC = () => {
         type='primary'
         onClick={() => setVisible(!visible)}
         className={Styles.floatButton}
+        data-testid='floatBotton'
       />
       <ModalForm
         visible={visible}
@@ -173,12 +175,22 @@ const Dashboard: React.FC = () => {
         onCancel={() => setVisible(false)}
       />
       {currencyConvertorCards.length > 0 && (
-        <Row className={Styles.rowContainer} gutter={16}>
+        <Row
+          className={Styles.rowContainer}
+          gutter={16}
+          data-testid='rowContainer'
+        >
           {currencyConvertorCards.map((item) => (
-            <Col key={item.id} span={8} className={Styles.CardContainer}>
-              <Card data={item} />
+            <Col
+              key={item.id}
+              span={8}
+              className={Styles.CardContainer}
+              data-testid='colContainer'
+            >
+              <Card data={item} data-testid='cardContainerWrapper' />
             </Col>
           ))}
+          {currencyConvertorCards.length > 0 && <p>wow</p>}
         </Row>
       )}
     </>
