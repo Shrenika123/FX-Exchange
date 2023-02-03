@@ -1,6 +1,6 @@
 import { IAppContext, IDataForModal } from '../interface';
 import { AppContext } from '../store';
-import { screen } from '@testing-library/react';
+import { fireEvent, screen } from '@testing-library/react';
 
 export const WithMockContext = ({
   children,
@@ -62,3 +62,16 @@ export const clickElementByTestId = async (testId: string) => {
   const element = screen.findByTestId(testId);
   (await element).click();
 };
+
+
+export const changeInput = async (testId:string,value:string) => {
+  const input = screen.getByTestId(testId)
+  await fireEvent.change(input, { target: { value: value } })
+}
+
+
+export const checkInputValue = async (testId:string,value:string) => {
+  const input = screen.getByTestId(testId)
+  expect(input).toHaveValue(value)
+  
+}

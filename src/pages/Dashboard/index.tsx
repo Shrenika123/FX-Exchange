@@ -118,7 +118,7 @@ const Dashboard: React.FC = () => {
       });
     await setVisible(false);
   };
-  console.log(currencyConvertorCards);
+
   return (
     <>
       {currencyConvertorCards.length > 0 && (
@@ -133,6 +133,7 @@ const Dashboard: React.FC = () => {
                 sortingFunctionality(SORT_TYPES.DSC, SORT_FIELDS.CREATED_AT);
               }}
               title={labels.SortByCreated}
+              testId='createdAt'
             />
             <SortButton
               className={Styles.sortButton}
@@ -143,6 +144,7 @@ const Dashboard: React.FC = () => {
                 sortingFunctionality(SORT_TYPES.DSC, SORT_FIELDS.UPDATED_AT);
               }}
               title={labels.SortByUpdated}
+              testId='updatedAt'
             />
             <SortButton
               className={Styles.sortButton}
@@ -153,6 +155,7 @@ const Dashboard: React.FC = () => {
                 sortingFunctionality(SORT_TYPES.DSC, SORT_FIELDS.RATE);
               }}
               title={labels.SortByRate}
+              testId='rate'
             />
           </div>
           <Button onClick={onClickClearAll} className={Styles.clearButton}>

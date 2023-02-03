@@ -116,6 +116,7 @@ const CustomCard: React.FC<CardProps> = ({ data }) => {
     toCurrency: string,
     reload = false
   ) => {
+    console.log('ook')
     const { toCurrencyValue, fromCurrencyValue } = currencyCardData;
     setLoadingCard(true);
     utils
@@ -191,6 +192,7 @@ const CustomCard: React.FC<CardProps> = ({ data }) => {
                 )
               }
               className={Styles.arrowStyle}
+              data-testid='convertArrow'
             />
             <Col>{toCurrency}</Col>
           </Col>
@@ -207,6 +209,7 @@ const CustomCard: React.FC<CardProps> = ({ data }) => {
                     true
                   )
                 }
+
               />
               <CloseOutlined onClick={() => setStatus(STATUS.DELETE)} />
             </div>
@@ -214,12 +217,14 @@ const CustomCard: React.FC<CardProps> = ({ data }) => {
               className={Styles.inputWrapper}
               value={currencyCardData.fromCurrencyValue}
               onChange={changeFromCurrency}
-            ></Input>
+              data-testid='fromCurrencyInput'
+            />
             <Input
               className={Styles.inputWrapper}
               value={currencyCardData.toCurrencyValue}
               onChange={changeToCurrency}
-            ></Input>
+              data-testid='toCurrencyInput'
+            />
             <p className={Styles.spanUpdated}>Updated At</p>
             <p className={Styles.updatedAtText}>{updatedAt}</p>
           </Col>

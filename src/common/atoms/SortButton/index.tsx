@@ -8,6 +8,7 @@ interface ButtonProps {
   onAscClick: () => void;
   title: string;
   className?: any;
+  testId:string
 }
 
 const SortButton: React.FC<ButtonProps> = ({
@@ -15,6 +16,7 @@ const SortButton: React.FC<ButtonProps> = ({
   onAscClick,
   title,
   className,
+  testId
 }) => {
   return (
     <button
@@ -23,7 +25,7 @@ const SortButton: React.FC<ButtonProps> = ({
         className ? className : ''
       )}
       disabled={true}
-      data-testid='sortButton'
+      data-testid={testId}
     >
       <div className={Styles.sortButtonContentContainer}>
         <p>{title} </p>
