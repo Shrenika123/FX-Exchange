@@ -1,17 +1,12 @@
 import { render, cleanup, prettyDOM, waitFor } from '@testing-library/react';
-import axios from 'axios';
 import Dashboard from '..';
 import {
   allTextPresentInDOMByText,
   AppContextVAlue,
-  checkCountOfElementsPresent,
-  checkElementPresentInDomByTestId,
   clickElementByTestId,
-  textPresentInDOM,
   WithMockContext,
 } from '../../../common/testHelper';
 import { IDataForModal } from '../../../interface';
-import { screen } from '@testing-library/react';
 
 beforeAll(() => {
   global.matchMedia =

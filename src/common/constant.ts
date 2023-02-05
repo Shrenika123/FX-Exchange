@@ -164,6 +164,7 @@ export const labels = {
   SortByUpdated: 'SORT BY UPDATED',
   SortByCreated: 'SORT BY CREATED',
   SortByRate: 'SORT BY RATE',
+  SortAlphabetically: 'SORT ALPHABETICALLY',
   ClearAll: 'CLEAR ALL',
   EnterCurrency: 'Please Enter the Currencies',
   FromCurrency: 'From Currency',
@@ -173,5 +174,7 @@ export const labels = {
   somethingWentWrong: 'Something went wrong!!',
   cardAddedSuccessfully: 'Card Added Successfully!!',
   cardDeletedSuccessfully: 'Card Deleted SuccessFully',
-  allCardsDeletedSuccessfully: 'All card deleted successfully!!',
+  allCardsDeletedSuccessfully: 'All cards deleted successfully!!',
+  noCardPresent: 'No Cards are present, Please Add the currency card!!',
+  duplicateCard: 'Card not added as it already exists',
 };

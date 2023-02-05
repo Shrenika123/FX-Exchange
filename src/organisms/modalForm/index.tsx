@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { Modal, Form, Input } from 'antd';
+import { Modal, Form, AutoComplete } from 'antd';
 import { currencyTypes, labels } from '../../common/constant';
 import { useAppContext } from '../../store';
+import { getCurrencyOptions } from '../../common/utils';
 interface IProps {
   visible: boolean;
   onSubmit: (data: any) => void;
@@ -13,9 +14,21 @@ export interface IFormValue {
   toCurrency: string;
 }
 
+export interface IOptions {
+  label: string;
+  value: string;
+}
+
 const ModalForm: React.FC<IProps> = ({ visible, onSubmit, onCancel }) => {
   const [fromCurrency, setFromCurrency] = useState<string>('');
   const [toCurrency, setToCurrency] = useState<string>('');
+  const [fromCurrencyOptions, setFromCurrencyOptions] = useState<IOptions[]>(
+    getCurrencyOptions()
+  );
+  const [toCurrencyOptions, setToCurrencyOptions] = useState<IOptions[]>(
+    getCurrencyOptions()
+  );
+
   const [form] = Form.useForm();
   const { loading } = useAppContext();
   const resetForm = () => {
@@ -23,6 +36,7 @@ const ModalForm: React.FC<IProps> = ({ visible, onSubmit, onCancel }) => {
     setFromCurrency('');
     setToCurrency('');
   };
+  // const debouncedSearchTerm = useDebounce(searchStr, 500);
 
   const handleSubmit = (values: IFormValue) => {
     onSubmit(values);
@@ -47,6 +61,16 @@ const ModalForm: React.FC<IProps> = ({ visible, onSubmit, onCancel }) => {
     resetForm();
   };
 
+  const onSearchCurrency = (data: string, fromCurrency = true) => {
+    const currencies = getCurrencyOptions();
+    let filteredCurrencies = currencies.filter((item) =>
+      item.value.includes(data)
+    );
+    fromCurrency
+      ? setFromCurrencyOptions(filteredCurrencies ?? currencies)
+      : setToCurrencyOptions(filteredCurrencies ?? currencies);
+  };
+
   return (
     <Modal
       open={visible}
@@ -67,15 +91,11 @@ const ModalForm: React.FC<IProps> = ({ visible, onSubmit, onCancel }) => {
             },
           ]}
         >
-          <Input
-            onInput={(e) =>
-              ((e.target as HTMLInputElement).value = (
-                e.target as HTMLInputElement
-              ).value.toUpperCase())
-            }
-            onChange={(e) =>
-              setFromCurrency(e.target.value.toLocaleUpperCase())
-            }
+          <AutoComplete
+            options={fromCurrencyOptions}
+            onSelect={(data) => setFromCurrency(data)}
+            placeholder='Please Select From Currency'
+            onSearch={(data) => onSearchCurrency(data.toLocaleUpperCase())}
           />
         </Form.Item>
         <Form.Item
@@ -87,15 +107,13 @@ const ModalForm: React.FC<IProps> = ({ visible, onSubmit, onCancel }) => {
             },
           ]}
         >
-          <Input
-            onInput={(e) =>
-              ((e.target as HTMLInputElement).value = (
-                e.target as HTMLInputElement
-              ).value.toUpperCase())
+          <AutoComplete
+            options={toCurrencyOptions}
+            onSelect={(data) => setToCurrency(data)}
+            onSearch={(data) =>
+              onSearchCurrency(data.toLocaleUpperCase(), false)
             }
-            type='textarea'
-            value={toCurrency}
-            onChange={(e) => setToCurrency(e.target.value.toLocaleUpperCase())}
+            placeholder='Please Select To Currency'
           />
         </Form.Item>
       </Form>

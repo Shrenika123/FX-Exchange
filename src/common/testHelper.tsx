@@ -1,4 +1,9 @@
-import { IAppContext, IDataForModal } from '../interface';
+import {
+  IAppContext,
+  IDataForModal,
+  SORT_FIELDS,
+  SORT_TYPES,
+} from '../interface';
 import { AppContext } from '../store';
 import { fireEvent, screen } from '@testing-library/react';
 
@@ -23,6 +28,8 @@ export const AppContextVAlue: IAppContext = {
   setDashBoardData: jest.fn,
   setDeleteAll: jest.fn,
   setError: jest.fn,
+  setSortDetails: jest.fn,
+  sortDetails: { type: SORT_TYPES.DSC, field: SORT_FIELDS.CREATED_AT },
 };
 
 export const checkElementPresentInDomByTestId = async (testId: string) => {
@@ -40,9 +47,12 @@ export const textPresentInDOM = async (text: string) => {
   expect(element).toBeInTheDocument();
 };
 
-export const allTextPresentInDOMByText = async (text: string,count:number) => {
+export const allTextPresentInDOMByText = async (
+  text: string,
+  count: number
+) => {
   const element = screen.queryAllByText(text);
-  expect(element).toHaveLength(count)
+  expect(element).toHaveLength(count);
 };
 
 export const checkCountOfElementsPresent = async (
@@ -63,15 +73,12 @@ export const clickElementByTestId = async (testId: string) => {
   (await element).click();
 };
 
+export const changeInput = async (testId: string, value: string) => {
+  const input = screen.getByTestId(testId);
+  await fireEvent.change(input, { target: { value: value } });
+};
 
-export const changeInput = async (testId:string,value:string) => {
-  const input = screen.getByTestId(testId)
-  await fireEvent.change(input, { target: { value: value } })
-}
-
-
-export const checkInputValue = async (testId:string,value:string) => {
-  const input = screen.getByTestId(testId)
-  expect(input).toHaveValue(value)
-  
-}
+export const checkInputValue = async (testId: string, value: string) => {
+  const input = screen.getByTestId(testId);
+  expect(input).toHaveValue(value);
+};

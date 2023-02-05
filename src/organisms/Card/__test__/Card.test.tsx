@@ -1,14 +1,17 @@
 import { render, cleanup, prettyDOM, waitFor, act } from '@testing-library/react';
-import axios from 'axios';
+import axios, { AxiosStatic } from 'axios';
 import Card from '..';
+import utils from '../../../API/utils';
 import {
   allTextPresentInDOMByText,
   AppContextVAlue,
   changeInput,
   checkCountOfElementsPresent,
+  checkElementNotPresentInDomByTestId,
   checkElementPresentInDomByTestId,
   checkInputValue,
   clickElementByTestId,
+  textNotPresentInDOM,
   textPresentInDOM,
   WithMockContext,
 } from '../../../common/testHelper';
@@ -39,10 +42,10 @@ const mockCurrencyCards: IDataForModal[] = [
   {
     convertedRate: '0.012363',
     createdAt: '2023-01-24 23:35:31',
-    fromCurrency: 'INR',
+    fromCurrency: 'ZAR',
     fromCurrencyValue: '',
     id: 'iSVsScmZFKkWuLvyKL_dh1',
-    toCurrency: 'USD',
+    toCurrency: 'EUR',
     toCurrencyValue: '',
     updatedAt: '2023-01-27 23:35:00',
   }
@@ -64,11 +67,32 @@ const mockCurrencyCards: IDataForModal[] = [
 //     </WithMockContext>
 //   );
 // };
+interface AxiosMock extends AxiosStatic {
+  mockResolvedValue: Function
+  mockRejectedValue: Function
+}
+
+
+jest.mock('axios')
+const mockAxios = axios as AxiosMock
+
+const mockCardData:IDataForModal={
+  convertedRate: '0.012363',
+  createdAt: '2023-01-24 23:35:31',
+  fromCurrency: 'ZAR',
+  fromCurrencyValue: '',
+  id: 'iSVsScmZFKkWuLvyKL_dh1',
+  toCurrency: 'EUR',
+  toCurrencyValue: '',
+  updatedAt: '2023-01-27 23:35:00',
+}
+
 const RenderCard = () => {
     return (
       <WithMockContext
         value={{
-                ...AppContextVAlue,
+          ...AppContextVAlue,
+          currencyConvertorCards: mockCurrencyCards, 
             loading:false
         }}
       >
@@ -79,38 +103,37 @@ const RenderCard = () => {
 
 axios.get = jest.fn()
 
-const mockCardData:IDataForModal={
-    convertedRate: '0.012363',
-    createdAt: '2023-01-24 23:35:31',
-    fromCurrency: 'INR',
-    fromCurrencyValue: '',
-    id: 'iSVsScmZFKkWuLvyKL_dh1',
-    toCurrency: 'USD',
-    toCurrencyValue: '',
-    updatedAt: '2023-01-27 23:35:00',
-  }
-
 describe('Card Component', () => {
-    beforeAll(() => {
-        (axios.get as jest.Mock).mockResolvedValue({
-            data: {
-                result: {
-                    rate: 1.0123
-                }
-            }
-        })
-    });
-    test('Card Component', async () => {
-        
+  beforeAll(() => {
+      utils.fetch = jest.fn(() => Promise.resolve({
+        data: {
+          result: {
+          rate:1.203
+        }
+      }}));
 
+    })
+    test('Card Component while changing input and deleting the card', async () => {
     render(<RenderCard/>)
     await changeInput('fromCurrencyInput', '2');
     await checkInputValue('toCurrencyInput', '0.02');
     await changeInput('toCurrencyInput', '3');
     await checkInputValue('fromCurrencyInput', '242.66');
-    act(() => {
-        /* fire events that update state */
-         clickElementByTestId('convertArrow')
+    await changeInput('fromCurrencyInput', '3');
+    await checkInputValue('toCurrencyInput', '0.04');
+      // eslint-disable-next-line testing-library/await-async-utils
+    waitFor(async () => {
+        await clickElementByTestId('closeButton');
+      await textNotPresentInDOM('ZAR');
+    })
     });
-  });
+  
+    test.skip('Card Component while reloading', async () => {
+      await render(<RenderCard/>)
+        // eslint-disable-next-line testing-library/await-async-utils
+     await waitFor(async () => {
+          await clickElementByTestId('reloadButton');
+          await checkInputValue('fromCurrencyInput', '');
+        })
+    });
 });

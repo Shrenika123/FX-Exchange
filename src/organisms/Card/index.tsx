@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { API_METHODS, IDataForModal } from '../../interface';
 import { ReloadOutlined, CloseOutlined } from '@ant-design/icons';
 import Styles from './card.module.scss';
-import { formatDate, isNum } from '../../common/utils';
+import { formatDate, isNum, sortingFunctionality } from '../../common/utils';
 import { useAppContext } from '../../store';
 import utils from '../../API/utils';
 import Loader from '../../common/atoms/Loader';
@@ -31,19 +31,40 @@ const CustomCard: React.FC<CardProps> = ({ data }) => {
   const [lastChanged, setLastChanged] = useState<CURRENCY>(
     CURRENCY.FROM_CURRENCY
   );
-  const { setDashBoardData, setAlertMessage } = useAppContext();
+  const {
+    setDashBoardData,
+    setAlertMessage,
+    sortDetails,
+    currencyConvertorCards,
+    setSortDetails,
+  } = useAppContext();
   const [loadingCard, setLoadingCard] = useState(false);
-
   useEffect(() => {
-    if (status === STATUS.UPDATE) setDashBoardData('UPDATE', currencyCardData);
-    else if (status === STATUS.DELETE) {
+    if (status === STATUS.UPDATE) {
+      setDashBoardData('UPDATE', currencyCardData);
+    } else if (status === STATUS.DELETE) {
       setDashBoardData('DELETE', currencyCardData);
       setAlertMessage({
         type: 'success',
         message: 'card deleted Successfully!!',
       });
     }
-  }, [currencyCardData, status]);
+    return () => {
+      setStatus(STATUS.NONE);
+    };
+  }, [status]);
+
+  useEffect(() => {
+    if (status === STATUS.NONE) {
+      setDashBoardData('SET_COMPLETE_DATA', {} as IDataForModal, [
+        ...sortingFunctionality(
+          sortDetails.type,
+          sortDetails.field,
+          currencyConvertorCards
+        ),
+      ]);
+    }
+  }, [status]);
 
   const calculateCurrency = (
     currencyType: CURRENCY,
@@ -116,8 +137,8 @@ const CustomCard: React.FC<CardProps> = ({ data }) => {
     toCurrency: string,
     reload = false
   ) => {
-    console.log('ook')
     const { toCurrencyValue, fromCurrencyValue } = currencyCardData;
+    console.log(fromCurrency, toCurrency);
     setLoadingCard(true);
     utils
       .fetch(
@@ -209,9 +230,12 @@ const CustomCard: React.FC<CardProps> = ({ data }) => {
                     true
                   )
                 }
-
+                data-testid='reloadButton'
               />
-              <CloseOutlined onClick={() => setStatus(STATUS.DELETE)} />
+              <CloseOutlined
+                onClick={() => setStatus(STATUS.DELETE)}
+                data-testid='closeButton'
+              />
             </div>
             <Input
               className={Styles.inputWrapper}
@@ -232,5 +256,5 @@ const CustomCard: React.FC<CardProps> = ({ data }) => {
       </Card>
     </div>
   );
-};
+};  
 export default CustomCard;

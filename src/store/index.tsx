@@ -6,7 +6,14 @@ import {
   useReducer,
   useEffect,
 } from 'react';
-import { ActionType, IAlert, IDataForModal } from '../interface';
+import {
+  ActionType,
+  IAlert,
+  IDataForModal,
+  ISortDetails,
+  SORT_FIELDS,
+  SORT_TYPES,
+} from '../interface';
 import { counterReducer } from './reducer';
 
 export const AppContext = createContext({
@@ -24,6 +31,11 @@ export const AppContext = createContext({
   setDeleteAll: (_deleteAll: boolean) => {},
   setAlertMessage: (_alertMessage: IAlert) => {},
   alertMessage: { type: '', message: '' },
+  setSortDetails: (_sortDetails: ISortDetails) => {},
+  sortDetails: {
+    type: SORT_TYPES.ASC,
+    field: SORT_FIELDS.CREATED_AT,
+  },
 });
 
 export const WithAppContext = ({
@@ -42,6 +54,11 @@ export const WithAppContext = ({
     type: 'success',
     message: '',
   });
+  const [sortDetails, setSortDetails] = useState<ISortDetails>({
+    type: SORT_TYPES.DSC,
+    field: SORT_FIELDS.CREATED_AT,
+  });
+
   useEffect(() => {
     localStorage.setItem('DELETE_ALL', JSON.stringify(deleteAll));
   }, [deleteAll]);
@@ -91,8 +108,17 @@ export const WithAppContext = ({
           deleteAll,
           setAlertMessage,
           alertMessage,
+          sortDetails,
+          setSortDetails,
         }),
-        [error, loading, currencyConvertorCards, deleteAll, alertMessage]
+        [
+          error,
+          loading,
+          currencyConvertorCards,
+          deleteAll,
+          alertMessage,
+          sortDetails,
+        ]
       )}
     >
       {children}

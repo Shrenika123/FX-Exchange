@@ -1,8 +1,5 @@
-import { Method } from '@testing-library/react';
 import Axios from 'axios';
-import { config } from 'process';
 import { API_METHODS } from '../interface';
-import { useAppContext } from '../store';
 
 interface IAPIOptions<dataType> {
   method?: API_METHODS;
