@@ -8,9 +8,9 @@ import {
   SORT_FIELDS,
   SORT_TYPES,
 } from '../../interface';
-import ModalForm, { IFormValue } from '../../organisms/modalForm';
+import ModalForm, { IFormValue } from './organisms/modalForm';
 import { nanoid } from 'nanoid';
-import Card from '../../organisms/Card';
+import Card from './organisms/Card';
 import Styles from './index.module.scss';
 import { formatDate, sortingFunctionality } from '../../common/utils';
 import { useAppContext } from '../../store';
@@ -26,6 +26,7 @@ const Dashboard: React.FC = () => {
     setAlertMessage,
   } = useAppContext();
   const [visible, setVisible] = useState(false);
+
   useEffect(() => {
     if (currencyConvertorCards.length > 0) {
       setDeleteAll(false);
@@ -79,7 +80,6 @@ const Dashboard: React.FC = () => {
           }
         )
         .then((res) => {
-          console.log('in then');
           setLoading(false);
           setDashBoardData('ADD', {
             ...currencies,
@@ -158,7 +158,11 @@ const Dashboard: React.FC = () => {
               testId='rate'
             />
           </div>
-          <Button onClick={onClickClearAll} className={Styles.clearButton}>
+          <Button
+            onClick={onClickClearAll}
+            className={Styles.clearButton}
+            data-testid='clearAll'
+          >
             {labels.ClearAll}
           </Button>
         </div>
@@ -179,7 +183,11 @@ const Dashboard: React.FC = () => {
       />
       {currencyConvertorCards.length === 0 && (
         <>
-          <img src='./no-data.png' className={Styles.noData} />
+          <img
+            src='./no-data.png'
+            className={Styles.noData}
+            data-testid='noData'
+          />
           <p>{labels.noCardPresent}</p>
         </>
       )}

@@ -14,7 +14,7 @@ import {
   SORT_FIELDS,
   SORT_TYPES,
 } from '../interface';
-import { counterReducer } from './reducer';
+import { currencyCardsReducer } from './reducer';
 
 export const AppContext = createContext({
   loading: false,
@@ -33,7 +33,7 @@ export const AppContext = createContext({
   alertMessage: { type: '', message: '' },
   setSortDetails: (_sortDetails: ISortDetails) => {},
   sortDetails: {
-    type: SORT_TYPES.ASC,
+    type: SORT_TYPES.DSC,
     field: SORT_FIELDS.CREATED_AT,
   },
 });
@@ -46,7 +46,7 @@ export const WithAppContext = ({
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<boolean>(false);
   const [currencyConvertorCards, setCurrencyConvertorCards] = useReducer(
-    counterReducer,
+    currencyCardsReducer,
     []
   );
   const [deleteAll, setDeleteAll] = useState<boolean>(false);

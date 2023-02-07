@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { Modal, Form, AutoComplete } from 'antd';
-import { currencyTypes, labels } from '../../common/constant';
-import { useAppContext } from '../../store';
-import { getCurrencyOptions } from '../../common/utils';
+import { currencyTypes, labels } from '../../../../common/constant';
+import { useAppContext } from '../../../../store';
+import { getCurrencyOptions } from '../../../../common/utils';
 interface IProps {
   visible: boolean;
   onSubmit: (data: any) => void;
@@ -36,7 +36,6 @@ const ModalForm: React.FC<IProps> = ({ visible, onSubmit, onCancel }) => {
     setFromCurrency('');
     setToCurrency('');
   };
-  // const debouncedSearchTerm = useDebounce(searchStr, 500);
 
   const handleSubmit = (values: IFormValue) => {
     onSubmit(values);

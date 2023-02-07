@@ -1,13 +1,17 @@
 import { Card, Col, Input, Row } from 'antd';
 import React, { useEffect, useState } from 'react';
-import { API_METHODS, IDataForModal } from '../../interface';
+import { API_METHODS, IDataForModal } from '../../../../interface';
 import { ReloadOutlined, CloseOutlined } from '@ant-design/icons';
 import Styles from './card.module.scss';
-import { formatDate, isNum, sortingFunctionality } from '../../common/utils';
-import { useAppContext } from '../../store';
-import utils from '../../API/utils';
-import Loader from '../../common/atoms/Loader';
-import { labels } from '../../common/constant';
+import {
+  formatDate,
+  isNum,
+  sortingFunctionality,
+} from '../../../../common/utils';
+import { useAppContext } from '../../../../store';
+import utils from '../../../../API/utils';
+import Loader from '../../../../common/atoms/Loader';
+import { labels } from '../../../../common/constant';
 interface CardProps {
   data: IDataForModal;
 }
@@ -36,7 +40,6 @@ const CustomCard: React.FC<CardProps> = ({ data }) => {
     setAlertMessage,
     sortDetails,
     currencyConvertorCards,
-    setSortDetails,
   } = useAppContext();
   const [loadingCard, setLoadingCard] = useState(false);
   useEffect(() => {
@@ -138,7 +141,6 @@ const CustomCard: React.FC<CardProps> = ({ data }) => {
     reload = false
   ) => {
     const { toCurrencyValue, fromCurrencyValue } = currencyCardData;
-    console.log(fromCurrency, toCurrency);
     setLoadingCard(true);
     utils
       .fetch(
@@ -256,5 +258,5 @@ const CustomCard: React.FC<CardProps> = ({ data }) => {
       </Card>
     </div>
   );
-};  
+};
 export default CustomCard;

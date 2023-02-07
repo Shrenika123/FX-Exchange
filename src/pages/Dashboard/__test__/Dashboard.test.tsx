@@ -1,8 +1,10 @@
-import { render, cleanup, prettyDOM, waitFor } from '@testing-library/react';
+import { render } from '@testing-library/react';
 import Dashboard from '..';
 import {
   allTextPresentInDOMByText,
   AppContextVAlue,
+  checkElementNotPresentInDomByTestId,
+  checkElementPresentInDomByTestId,
   clickElementByTestId,
   WithMockContext,
 } from '../../../common/testHelper';
@@ -39,7 +41,7 @@ const mockCurrencyCards: IDataForModal[] = [
     toCurrency: 'USD',
     toCurrencyValue: '',
     updatedAt: '2023-01-27 23:35:00',
-  }
+  },
 ];
 
 const RenderDashBoard = ({
@@ -60,18 +62,18 @@ const RenderDashBoard = ({
 };
 
 describe('Dashboard Page', () => {
-  // axiosMock.mockResolvedValue(mockApi);
-  test('Dasboard', async () => {
-    // eslint-disable-next-line testing-library/render-result-naming-convention
-    render(
+  test('Dashboard', async () => {
+    await render(
       <RenderDashBoard currencyConvertorCards={mockCurrencyCards} />
     );
-    // eslint-disable-next-line testing-library/no-debugging-utils
-    // screen.debug(undefined, 300000)  
-    // let matchs = screen.queryAllByText('0.012363')
-    // expect(matchs).toHaveLength(2);
-    // textPresentInDOM('0.012363sdsd')
-    await allTextPresentInDOMByText('0.012363', 2)
+    await allTextPresentInDOMByText('0.012363', 2);
     await clickElementByTestId('updatedAt');
+    await checkElementPresentInDomByTestId('rowContainer');
+  });
+
+  test('Dashboard no data', async () => {
+    await render(<RenderDashBoard currencyConvertorCards={[]} />);
+    await checkElementNotPresentInDomByTestId('rowContainer');
+    await checkElementPresentInDomByTestId('noData');
   });
 });

@@ -6,7 +6,7 @@ const updateTheArray = (data: IDataForModal[], state: IDataForModal) => {
   return [...data.slice(0, index), state, ...data.slice(index + 1)];
 };
 
-export function counterReducer(state: IDataForModal[], action: Action) {
+export function currencyCardsReducer(state: IDataForModal[], action: Action) {
   const { type, payload, completeState } = action;
   switch (type) {
     case 'ADD': {
